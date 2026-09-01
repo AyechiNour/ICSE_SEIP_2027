@@ -1,0 +1,116 @@
+
+% VLDB template version of 2020-08-03 enhances the ACM template, version 1.7.0:
+% https://www.acm.org/publications/proceedings-template
+% The ACM Latex guide provides further information about the ACM template
+
+\documentclass[sigconf, nonacm]{acmart}
+
+%% The following content must be adapted for the final version
+% paper-specific
+\newcommand\vldbdoi{XX.XX/XXX.XX}
+\newcommand\vldbpages{XXX-XXX}
+% issue-specific
+\newcommand\vldbvolume{14}
+\newcommand\vldbissue{1}
+\newcommand\vldbyear{2020}
+% should be fine as it is
+\newcommand\vldbauthors{\authors}
+\newcommand\vldbtitle{\shorttitle} 
+% leave empty if no availability url should be set
+\newcommand\vldbavailabilityurl{URL_TO_YOUR_ARTIFACTS}
+% whether page numbers should be shown or not, use 'plain' for review versions, 'empty' for camera ready
+\newcommand\vldbpagestyle{plain} 
+
+
+%%%%% My macros
+\input{macros}
+
+\usepackage{makecell}
+\usepackage{longtable} % For tables that span multiple pages
+\usepackage{booktabs}  % For better horizontal rules
+
+
+\begin{document}
+\title{Locating business rules}
+
+%%
+%% The "author" command and its associated commands are used to define the authors and their affiliations.
+\author{Nour Ayachi}
+\orcid{0009-0007-1777-5530}
+\affiliation{%
+  \institution{Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL}
+  \city{Villeneuve D'Ascq}
+  \country{France}
+}
+\email{nour.ayachi@inria.fr}
+
+\author{Benoit VERHAEGHE}
+\orcid{0000-0001-7423-6399}
+\affiliation{%
+  \institution{Berger-Levrault}
+  \city{Limonest}
+  \country{France}
+}
+\email{Benoit.VERHAEGHE@berger-levrault.com}
+
+\author{Christopher Fuhrman}
+\orcid{0000-0001-8010-1087}
+\affiliation{%
+  \institution{Ecole de technologie superieure ´}
+  \city{Montreal}
+  \country{Canada}
+}
+\email{christopher.fuhrman@etsmtl.ca}
+
+\author{Nicolas Anquetil}
+\orcid{0000-0003-1486-8399}
+\affiliation{%
+  \institution{Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL}
+  \city{Villeneuve D'Ascq}
+  \country{France}
+}
+\email{nicolas.anquetil@inria.fr}
+
+\author{Anne Etien}
+\orcid{}
+\affiliation{%
+  \institution{Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL}
+  \city{Villeneuve D'Ascq}
+  \country{France}
+}
+\email{anne.etien@univ-lille.fr}
+
+\input{sections/abstract.tex}
+
+\maketitle
+
+\input{sections/introduction.tex}
+
+\input{sections/background.tex}
+
+\input{sections/relatedWork.tex}
+
+\input{sections/problemContext.tex}
+
+\input{sections/approach.tex}
+
+\input{sections/caseStudy.tex}
+
+\input{sections/evaluation.tex}
+
+\input{sections/results.tex}
+
+\input{sections/discussion.tex}
+
+\input{sections/futureWork.tex}
+
+\input{sections/threatsToValidity.tex}
+
+\input{sections/conclusion.tex}
+
+\bibliographystyle{ACM-Reference-Format}
+%%%%% Bibliography
+\bibliography{rmod,others}
+
+\end{document}
+\endinput
