@@ -1,3 +1,21 @@
 \section{Introduction}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Business rules are operational rules that organizations follow to carry out their activities\cite{Huan96a}. They define the core logic of business processes and ensure that these processes remain consistent with organizational policies, objectives, and regulations. When implemented in software systems, business rules play a critical role in supporting daily operations\cite{Cose13a}. They can range from simple validation rules to complex decision-making mechanisms.
+
+However, business rules are rarely implemented as a single, clearly identifiable component of an Information System (IS). Instead, they are often scattered across different parts of the source code\cite{Cose12a}. In long-lived software systems, these rules are also affected by the evolution of the codebase. Systems are developed and maintained over many years by different developers and teams, making their implementation increasingly difficult to understand. Documentation may become incomplete or outdated, while the developers who originally implemented the rules may no longer be available\cite{Cose13a}. As a result, understanding how a particular business rule is implemented can become a difficult task.
+
+At the same time, business organizations continuously evolve. Their structures, policies, and strategies may change in response to new market conditions, organizational needs, or regulatory requirements\cite{Chit19a}. Such changes often require corresponding modifications to the software. Before making a change, developers must identify the parts of the source code that implement the affected business rule. In a large and complex system, this task can be difficult and time-consuming. Developers may spend considerable effort searching for the relevant code before they can even begin implementing the change. This process is also error-prone, as modifying the wrong parts of the code can lead to inconsistent behavior or system failures.
+
+In this paper, we propose an approach to assist developers in locating the parts of the source code where a given business rule is implemented. Given a textual description of a business rule, our approach identifies the methods that are most likely to implement it and progressively reduces the set of candidate methods. This reduces the amount of code that developers need to inspect and allows them to focus their investigation on the parts of the system that are most relevant to the rule.
+
+A further challenge concerns the evaluation of such an approach. In real-world software systems, there is often no ground truth, that is, no authoritative mapping between business rules and the code that implements them. Without such a reference, directly measuring the effectiveness of the approach is difficult.
+
+Based on these challenges, this work investigates the following research questions:
+
+\begin{enumerate}
+    \item[\textbf{RQ1.}] To what extent can our approach identify the methods that implement a given business rule?
+    
+    \item[\textbf{RQ2.}] How can the effectiveness of a business rule localization approach be evaluated when no ground truth is available?
+\end{enumerate}
+
+The remainder of this paper is organized as follows. Section II introduces the main concepts related to business rules and reviews existing work on their extraction and identification in source code. Section III describes the industrial context and the problem addressed in this work. Section IV presents the proposed approach and its different steps. Section V describes the evaluation strategy based on code comments. Section VI illustrates the approach through a use case. Section VII presents and discusses the results. Section VIII discusses the factors that influenced the performance of the approach and the potential threats to its validity. Finally, Section IX concludes the paper and presents directions for future work.
