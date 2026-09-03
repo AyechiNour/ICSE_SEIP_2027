@@ -1,0 +1,11 @@
+\section{Post-approach: Context-based Refinement}
+
+The results obtained at the end of the approach can be further refined when additional information about the business rule is available. In particular, the more precise and informative the description of a business rule is, the more effectively the set of candidate methods obtained in Step (P.3) can be reduced.
+
+The description of a business rule may provide contextual information about the business process, functional area, or domain to which the rule belongs. Such information can be exploited to further discriminate between the candidate methods identified by our approach. The objective is therefore to use the available context as an additional filtering criterion rather than relying solely on the business rule description.
+
+One possible way to exploit this contextual information is to consider the names of the classes in which the candidate methods are implemented. We assume that methods belonging to the same business context are likely to be grouped within related classes or classes whose names reflect the same functional context. Consequently, if the context of the business rule can be identified, the names of the classes containing the candidate methods can be used to further filter the results. Methods implemented in classes that are not related to the identified context can then be discarded.
+
+This post-approach refinement is particularly useful when Step (P.3) produces a relatively large set of candidate methods due to the use of an OR-based filtering strategy. While the main approach deliberately retains multiple candidates to avoid losing potentially relevant implementations, contextual information can subsequently be used to reduce this set and obtain a more precise collection of candidate methods.
+
+Importantly, this refinement does not aim to identify a single implementation point. Instead, it progressively narrows the set of candidates by combining the relationships identified by the main approach with contextual information available in the business rule description. The more information the description provides about the rule and its context, the more opportunities there are to further reduce the search space for developers.
