@@ -1,3 +1,33 @@
 \section{Case Study}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+We evaluate our approach through a case study conducted on a large-scale industrial software system. The selected system is a Java-based financial management application composed of 16,555 classes and 115,829 methods. Its size and complexity make it a suitable setting for investigating the applicability and scalability of the proposed approach in an industrial context. In addition, the system suffers from limited and incomplete documentation, which makes documentation-based analysis insufficient for gaining a comprehensive understanding of the codebase and its business logic. Our approach addresses this challenge through a fully automated process that systematically analyzes the source code and identifies relevant candidate methods without requiring manual intervention. The case study therefore allows us to examine both the practical applicability of the approach and its ability to operate on a large and poorly documented software system.
+
+\subsection{Preliminary Steps}
+
+Before applying the main stages of the approach described in Section~\ref{sec:Approach}, we perform a preliminary analysis of the source code to determine the set of business entities that will serve as the basis for the subsequent processing.
+
+\paragraph{P.1\quad Identify business entities within the source code}\noindent
+
+We identify business classes by exploiting the structure of the application's persistence layer. More specifically, the analysis focuses on the internal Object-Relational Mapping (ORM) layer, whose role is to represent and persist the business data handled by the system. In this layer, business entities follow a common inheritance structure: each relevant class extends the \texttt{AbstractPersistentEntity} abstract class.
+
+This inheritance relationship constitutes the primary criterion used to identify candidate business classes. We further validate this selection using two properties of these classes. First, instances of classes extending \texttt{AbstractPersistentEntity} are accessed through Data Access Objects (DAOs), establishing a direct connection between these classes and the data persisted in the database. Second, they provide the \texttt{mapperOR} method, which defines how the attributes of an object are associated with the corresponding database table columns.
+
+These structural and behavioral characteristics allow us to distinguish classes representing persistent business entities from the other classes in the application. Applying these criteria to the source code results in a set of \textbf{561 business classes}. We then extract the attributes associated with these classes, resulting in a total of \textbf{8,001 attributes}. Overall, the identified business classes and their attributes constitute a set of \textbf{8,562 business entities}.
+
+\paragraph{P.2\quad For each business entity, we identify the methods in the source code that manipulate that entity}\noindent
+
+We processed the business entities identified in P.1. For each business class, we identified the methods that reference it. Similarly, for each attribute, we identified the methods that access it through its corresponding accessor methods, namely its getter and setter methods.
+
+\subsection{Rule-Specific Steps}
+
+\paragraph{R.1\quad Extract a set of chunks from a business rule description}\noindent
+
+The set of 100 business rule descriptions serves as input for R.1, and this step is fully automated. The descriptions are processed individually, one at a time. For each business rule description, we first remove the stop words. We then generate chunks by considering all possible combinations of consecutive words in the resulting description. This exhaustive chunk generation allows different portions of the business rule to be considered at different granularities.
+
+\paragraph{R.2\quad For each relevant chunk, identify the business entities it refers to}\noindent
+
+For each chunk extracted in R.1, we identify the business entities to which its terms refer. This step relies on the business entities identified during the preliminary phase (P.1). By comparing the terms contained in each chunk with the representations of the business entities, we determine the entities that are potentially relevant to each portion of the business rule description. We then compute the cosine similarity between the chunk representation and the representations of the business entities and filter out chunks whose similarity score does not meet the defined threshold. As a result, each relevant chunk is associated with a set of business entities that capture the business concepts expressed in that portion of the description. The business entities identified across all relevant chunks of a given business rule description are then collected and used as input for the next step of the approach.
+
+\paragraph{R.3\quad For each business entity identified in R.2, retrieve the list of methods that use it, based on the information obtained in P.2}\noindent
+
+For each business entity identified in R.2, we retrieve the methods that use or reference that entity. This information is obtained from the associations established in P.2, where each business entity is associated with a set of methods that reference it. The retrieved methods form the candidate set associated with the corresponding business entity. By performing this retrieval for each identified business entity, we obtain a set of candidate methods that may potentially implement the business rule and can be further investigated by the developer.
