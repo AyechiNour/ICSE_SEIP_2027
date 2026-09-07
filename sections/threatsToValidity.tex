@@ -1,3 +1,15 @@
 \section{Threats To Validity}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Our study is subject to several threats to validity.
+
+\subsection{Evaluation on a Single Industrial System}
+
+Our evaluation is conducted on a single large industrial Java application. Its architecture, business domain, naming conventions, and documentation practices may differ from those of other legacy systems. In particular, the presence of business-rule identifiers and contextual information in the available artifacts may not be common across other projects. Further evaluations on different systems and domains are therefore necessary to assess the generalizability of our findings.
+
+\subsection{Search Space Reduction vs. Developer Effort}
+
+Although our approach substantially reduces the number of methods that developers need to investigate, the size of the resulting candidate set does not directly measure the actual effort required to identify the correct implementation. Two candidate sets of the same size may require substantially different levels of investigation depending on the complexity and relationships between the methods. A developer study would therefore be necessary to determine whether the observed search-space reduction translates into a measurable reduction in maintenance effort.
+
+\subsection{Dependence on Parameter Selection}
+
+The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, different configurations may lead to different trade-offs between recall and search-space reduction. Similarly, the effectiveness of the context-based refinement depends on the availability and quality of contextual information in document and section names.
