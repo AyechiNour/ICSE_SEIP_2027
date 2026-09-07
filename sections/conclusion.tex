@@ -1,3 +1,9 @@
-\section{Conclusion}
+\section{Conclusion and Future Work}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Locating the implementation of business rules in large and evolving legacy systems remains a challenging task, particularly when documentation is incomplete and the relationship between business requirements and source code is not explicitly established. In this work, we presented a fully automated approach that assists developers in this task by progressively reducing the search space of potential implementation methods.
+
+The approach establishes a link between business rule descriptions and source code through the identification of business entities associated with the concepts expressed in the rule. These entities are then used to retrieve the methods that manipulate them, resulting in a set of candidate methods for further investigation. In addition, we introduced a Context-Based Refinement that exploits contextual information available in business-rule documentation to further narrow the candidate set.
+
+The evaluation conducted on a large industrial software system shows that the approach can retain relevant implementations while considerably reducing the amount of code that developers need to inspect. These results demonstrate the potential of combining semantic information from business rule descriptions with information extracted from source code to support business-rule localization in legacy systems.
+
+The approach is not intended to automatically identify a unique implementation of a business rule. Instead, it aims to provide developers with a focused and manageable set of candidate methods, reducing the effort required to investigate a large codebase and supporting software maintenance and evolution activities.
