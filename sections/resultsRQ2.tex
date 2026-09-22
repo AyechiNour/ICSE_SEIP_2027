@@ -1,0 +1,24 @@
+\section{Final Results (RQ2)}
+\label{sec:resultsRQ2}
+
+Applying the information extracted from the documentation further reduces the size of the candidate method sets while maintaining a high recall. The results obtained after applying the context-based filtering are summarized in Table~\ref{tab:rq2_results}. Compared with the results obtained by the main approach presented in the previous section, the candidate sets are substantially reduced, with the median number of candidates decreasing from 139 to 18.5 methods. The worst-case search space reduction also increases from 91\% to 99\%.
+
+This additional reduction is achieved with only a slight decrease in recall, from 96\% to 94\%. These results show that the information provided by the document and section names can effectively complement the main approach by further refining the candidate sets while preserving most of the correct implementations.
+
+\begin{table}[h]
+\centering
+\caption{Candidate-set size and recall after applying documentation-based context.}
+\label{tab:rq2_results}
+\begin{tabular}{lc}
+\hline
+\textbf{Metric} & \textbf{After context filtering} \\
+\hline
+Minimum number of candidates & 2 \\
+Maximum number of candidates & 179 \\
+Median number of candidates & 18.5 \\
+Average number of candidates & 30.56 \\
+Worst-case search space reduction & 99\% \\
+Recall & 94\% \\
+\hline
+\end{tabular}
+\end{table}

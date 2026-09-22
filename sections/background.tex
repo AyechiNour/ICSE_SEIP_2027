@@ -1,3 +1,22 @@
 \section{Background}
+\label{sec:background}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+This section introduces the key concepts used in this work: business rules, business vocabulary, business entities, business variables, and business classes.
+
+\subsection{Business Rules}
+
+Business rules describe the operational principles that govern how organizations carry out their activities\cite{Huan96a}. They specify expected behaviors, impose constraints, and ensure that business processes comply with organizational policies and objectives. Depending on the domain, a business rule may express a simple validation condition or a more complex decision involving several conditions and exceptions.
+
+Business rules can originate from various sources, including legal requirements, organizational policies, and industry practices. Over time, these rules are incorporated into software systems and become part of their application logic\cite{Wang08b}. As software evolves, their implementations may be distributed across different components of the system, making them increasingly difficult to trace and understand\cite{Cose13a}. Locating and understanding these implementations is therefore an important task for software maintenance, compliance, and system modernization.
+
+\subsection{Business Vocabulary}
+
+Business vocabulary refers to the set of concepts and terms used by an organization or a community to describe its domain and its activities. According to Prakash et al.\cite{Prak21a}, a business vocabulary is a coherent set of interconnected concepts that specifies how business activities are described and related.
+
+It includes business terms and verbs. Business terms refer to the entities, topics, and other concepts relevant to the business domain, such as Currency, Country, Customer, or Operational Cost. Verbs describe the relationships or actions connecting one or more business terms\cite{Prak21a}. Together, these elements provide the vocabulary through which domain concepts are expressed and understood.
+
+\subsection{Business Entities}
+
+Business entities are source-code elements that represent concepts from the business domain. In this work, we consider two types of business entities: \textit{business classes} and \textit{business attributes}. Business classes represent business concepts as classes in the source code, while business attributes represent the properties or characteristics associated with these concepts.
+
+For example, the business concept \textit{Budget} can be represented by a business class named \texttt{Budget}. This class may contain attributes such as \texttt{code}, \texttt{label}, and \texttt{type}, which represent different properties of a budget. In this way, the \texttt{Budget} class and its attributes provide a source-code representation of the corresponding business concept.

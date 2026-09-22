@@ -1,10 +1,10 @@
-\section{Approach}
-\label{sec:Approach}
+\section{Proposed Approach (RQ1)}
+\label{sec:approach}
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=\textwidth]{Schema.png}
-    \caption{Overview of the proposed approach.}
+    \includegraphics[width=\textwidth]{SchémaFinal.png}
+    \caption{Overview of the proposed approach}
     \label{fig:approach}
 \end{figure*}
 
@@ -12,103 +12,99 @@ To address the difficulty of identifying business-rule implementations within la
 
 \subsection{Overview of the Approach}
 
-To address the challenge of locating business rules in large codebases, we propose an approach that progressively narrows the search space by exploiting the business concepts expressed in rule descriptions. Specifically, business rule descriptions contain \textit{business terms} that refer to core business concepts, which are represented in the source code by \textit{business entities}. In this work, we consider business entities to include business classes and their attributes. Identifying these entities therefore provides a means of establishing a connection between the vocabulary of a business rule and its implementation in the source code.
+To address the challenge of locating business rules in large codebases, we propose an approach that progressively narrows the search space by exploiting the business concepts expressed in rule descriptions. Specifically, business rule descriptions contain business terms that refer to core business concepts, which are represented in the source code by business entities. In this work, we consider business entities to include business classes and their attributes. The objective is therefore to identify terms in a business rule description that can serve as links to the source code. When these terms correspond to business entities that represent the concepts described in the rule, they provide a basis for connecting the textual description of the rule to its implementation in the source code.
 
-To establish this connection, our approach combines information extracted from databases with information derived from source code to automatically identify relevant business classes. It then associates the business terms appearing in a given rule description with the corresponding business entities and uses these associations to identify methods that manipulate the relevant entities. The result is a set of candidate methods that are likely to participate in the implementation of the rule. Since a business rule may be distributed across multiple methods, our goal is not to identify a single implementation point, but rather to provide developers with a focused set of code elements for further investigation.
+To establish this link between the business rule description and its implementation in the source code, our approach combines information extracted from databases with information derived from source code to automatically identify relevant business classes. It then associates the business terms appearing in a given rule description with the corresponding business entities and uses these associations to identify methods that manipulate the relevant entities. The result is a set of candidate methods that are likely to participate in the implementation of the rule. Our goal is not to identify a single implementation point, but rather to provide developers with a focused set of code elements for further investigation.
 
 The approach consists of two preliminary steps, performed once for the entire codebase, and three rule-specific steps, applied for each business rule. All these steps are automated.
 
 \begin{itemize}
     \item \textbf{Preliminary Steps}
     \begin{enumerate}
-        \item[\textbf{P.1}] Identify business entities within the source code.
-        \item[\textbf{P.2}] For each business entity, we identify the methods in the source code that manipulate that entity.
+        \item[\textbf{P.1}] Identify business entities in the source code.
+        \item[\textbf{P.2}] For each business entity, identify the methods that manipulate it.
     \end{enumerate}
 
     \item \textbf{Rule-Specific Steps}
     \begin{enumerate}
-        \item[\textbf{R.1}] Extract a set of chunks from a business rule description.
-        \item[\textbf{R.2}] For each relevant chunk, identify the business entities it refers to.
-        \item[\textbf{R.3}] For each business entity identified in R.2, retrieve the list of methods that use it, based on the information obtained in P.2.
+        \item[\textbf{R.1}] Extract business vocabulary from the business rule description.
+        \item[\textbf{R.2}] Map business vocabulary to business entities.
+        \item[\textbf{R.3}] Select P.2 methods using business entities identified in R.2.
     \end{enumerate}
 \end{itemize}
 
-The objective of these steps is to obtain, at the end of the process, a set of candidate methods that manipulate at least one of the business entities identified in R.2. These methods represent potential implementation points of the business concepts expressed through the business terms of the given rule.
-
-The underlying principle is straightforward: a business rule description refers to specific business concepts through business terms, while its implementation relies on methods that manipulate the corresponding business entities in the source code. We therefore use the business entities identified in R.2 to retrieve the methods associated with them, based on the information collected in P.2.
-
-The use of an \textit{OR} condition rather than an \textit{AND} condition is intentional. Requiring a method to manipulate all identified entities could therefore exclude valid implementations and reduce recall. By retaining methods that manipulate at least one of the identified entities, we increase the size of the candidate set, but improve the likelihood of covering all methods that may contribute to the implementation of the business rule.
+The objective of these steps is to obtain a set of candidate methods that manipulate the business entities identified in R.2 and may therefore contribute to the implementation of the given business rule. Since business entities are identified from both classes and attributes in the source code, different entities may have closely related or even similar names. As a result, it may not be possible to determine with certainty which entity best represents a given business term. Therefore, for each business term, we consider all business entities that may potentially represent the corresponding business concept. In R.3, we use an OR condition when filtering methods based on these entities, retaining any method that manipulates at least one of them. This inclusive strategy increases the size of the candidate set, but reduces the risk of excluding methods that may contribute to the implementation of the business rule and thus improves the likelihood of covering all relevant implementation methods.
 
 \subsection{Detailed Steps of the Approach}
 
 The remainder of this section describes each step in detail and explains how it contributes to the identification of methods that potentially implement a given business rule. Figure~\ref{fig:approach} provides an overview of the proposed approach and its main steps.
 
+\vspace{-0.3em}
+
 \subsubsection{Preliminary Steps}\noindent
 
-\paragraph{P.1\quad Identify business entities within the source code}\noindent
+\vspace{-0.3em}
 
-\vspace{0.1cm}
+\paragraph{P.1\quad Identify business entities in the source code}\noindent
 
-The first step aims to automatically identify business entities in the source code. To this end, we combine information from both the source code and the database to define a criterion for identifying business classes. Specifically, we consider as business classes the classes belonging to the Object-Relational Mapping (ORM) layer that expose or manipulate data stored in the database. These classes are of particular interest because they represent the core business concepts and data managed by the system. Once the business classes have been identified, we also extract their attributes. The identified classes and their attributes collectively represent the business entities of the system.
+We begin by identifying the business entities present in the source code, starting with business classes. Our goal is to identify the classes that represent core business concepts and manage data relevant to the application domain. In our approach, these classes are represented by classes belonging to the Object-Relational Mapping (ORM) layer, which provide access to data persisted in the database. As discussed in Section~\ref{sec:businessVar}, business variables also provide useful information for locating business concepts in source code. However, directly identifying such variables in a large industrial system would require examining a potentially large number of program elements. We therefore use business classes as the starting point for identifying business entities, since they provide a more stable and structured representation of the domain concepts implemented in the system.
 
-Once the set of business entities has been identified, we prepare these entities for the subsequent steps of the approach. For each business entity, we take its name and represent it as an embedding. The entity names will then be used in Step R.2 to establish the mapping between the business terms extracted from the rule description and the corresponding business entities in the source code. Rather than relying solely on syntactic similarity, we use embeddings to capture semantic relationships between terms, allowing the mapping to account for similarities in meaning even when the terms do not share the same lexical form.
+To automate their identification, we rely on information available from both the source code and the underlying database. More specifically, we consider as business classes the ORM classes that expose or manipulate data persisted in the database. This criterion allows us to identify the classes that represent the application's persistent business entities without requiring manual inspection. For each identified business class, we also consider its attributes, as they represent the data elements through which business concepts are concretely represented in the source code. 
 
-\paragraph{P.2\quad For each business entity, we identify the methods in the source code that manipulate that entity}\noindent
+At the end of this step, we obtain a set of business entities composed of the identified business classes and their corresponding attributes.
 
-In P.1, we selected the business entities. In this step, we focus on identifying, for each business entity, the methods that manipulate or reference it. We consider two types of business entities: classes and attributes.
+\paragraph{P.2\quad For each business entity, identify the methods that manipulate it}\noindent
 
-For each business class, we collect the methods that reference the class, as these methods may implement operations involving the corresponding business entity. For attributes, since they are private, access to them is typically performed through their accessors, namely getter and setter methods. Therefore, for each business attribute, we identify the methods that invoke its getter or setter methods.
+In this step, we focus on identifying, for each business entity, the methods that manipulate or reference it. We consider two types of business entities: classes and attributes.
 
-At the end of this step, we obtain a collection in which each business entity is associated with a list of methods.
+For each business class, we collect the methods that reference the class, as these methods may implement operations involving the corresponding business entity. 
+
+For attributes, since they are private, access to them is typically performed through their accessors, namely getter and setter methods. Therefore, for each business attribute, we identify the methods that invoke its getter or setter methods.
+
+At the end of this step, we obtain a collection that associates each business entity with a list of methods.
+
+\vspace{-0.5em}
 
 \subsubsection{Rule-Specific Steps}\noindent
 
-\paragraph{R.1\quad Extract a set of chunks from a business rule description}\noindent
+\vspace{-0.5em}
 
-\vspace{0.1cm}
+\paragraph{R.1\quad Extract business vocabulary from the business rule description}\noindent
 
-Given a description of a business rule, we aim to identify the business terms it refers to. In a context where no dictionary is available to define in advance a list of business vocabulary terms, identifying business terms in a text is particularly challenging, as there is no clear boundary between domain-specific business terms and general words.
+Given a description of a business rule, we aim to identify the business vocabulary it refers to. In a context where no dictionary is available to define in advance a list of business vocabulary specific to the domain, identifying business terms directly from the rule description is particularly challenging. Indeed, there is no clear boundary between domain-specific business terms and general words, and the same term may have different meanings depending on the context in which it appears. Moreover, a business rule may contain various types of words, including domain concepts, actions, conditions, and contextual information, which makes it difficult to determine which terms are relevant for locating their implementation. Therefore, the identification process must distinguish terms that convey business concepts from words that do not provide useful information.
 
-Moreover, NLP-based approaches cannot reliably identify all relevant business terms because they do not necessarily belong to the same linguistic category. Business terms may correspond to individual nouns, noun phrases, or other linguistic structures, making it difficult to define a single set of linguistic rules for their extraction.
+Moreover, NLP-based approaches cannot reliably identify all relevant business terms because they do not necessarily belong to a specific linguistic category. Business terms may correspond to individual nouns, noun phrases, or other linguistic structures, making it difficult to define a single set of linguistic rules for their extraction.
 
-LLM-based approaches also face limitations, as business terms are highly domain-specific. A word that is common in general language may have a specific business meaning in a particular application domain. Without explicit knowledge of the domain or a predefined business vocabulary, an LLM may therefore overlook relevant terms or introduce terms that are not explicitly present in the description.
+Automatically identifying business terms from the rule description may lead to two opposite problems: retaining words that are not relevant to the business domain or discarding terms that are actually useful for locating the rule implementation. We therefore adopt a conservative strategy. Rather than selecting only the terms that are initially considered to be business terms, we retain a broad set of possible candidates extracted from the rule description.
 
-At this stage, identifying business terms may either introduce irrelevant or meaningless words or result in the loss of relevant information. Therefore, the objective of this step is to avoid losing any information at this stage. Rather than directly selecting the terms considered to be business terms, we retain all possible candidates and defer their filtering to the subsequent steps.
+For each business rule description, we first remove stop words and then generate chunks corresponding to consecutive sequences of the remaining words. These chunks cover different combinations of words that may form a business term, ranging from individual words to longer expressions. This strategy allows us to preserve potential business terms even when their linguistic structure cannot be determined in advance. As a result, the generated list may contain both relevant chunks that represent business concepts and irrelevant ones that do not correspond to meaningful business terms. The latter are filtered out in the subsequent steps using additional information available from the source code. At this stage, the objective is therefore not to precisely identify business terms, but rather to preserve the information contained in the rule description and avoid prematurely excluding potentially relevant candidates.
 
-For each business rule description, we construct a list of chunks corresponding to all possible combinations of consecutive words in the sentence, after removing stop words. This step allows us to retain both relevant chunks that contain potential business terms and irrelevant chunks. The latter are subsequently eliminated during the following steps.
+For example, consider the rule description \textit{``If specified, the issuing budget must exist for the local authority.''} After removing stop words, the remaining words are \textit{specified}, \textit{issuing}, \textit{budget}, \textit{exist}, \textit{local}, and \textit{authority}. We then generate consecutive chunks from these words, such as \textit{budget}, \textit{issuing budget}, \textit{local}, and \textit{local authority}. At this stage, all generated chunks are retained as candidates, without determining whether they correspond to actual business terms. The filtering of irrelevant candidates is performed in the subsequent steps.
 
-The objective is therefore to preserve as much information as possible from the business rule description.
+At the end of this step, all generated chunks are retained as candidates, regardless of the amount or relevance of information they contain. The main objective at this stage is to preserve all potentially useful information from the rule description and ensure that no relevant information is discarded before the subsequent steps.
 
-\paragraph{R.2\quad For each relevant chunk, identify the business entities it refers to.}\noindent
+\vspace{-0.5em}
 
-For each business rule description, we obtain a list of chunks. Each chunk is represented as an embedding in order to capture both its semantic and syntactic information. Thus, each chunk is associated with a vector representation that captures its meaning and linguistic structure.
+\paragraph{R.2\quad Map business vocabulary to business entities}\noindent
 
-As a result of P.1, we also obtain a list of business entities, together with the embeddings of their names. For each chunk, we compare its embedding with the embeddings of all business entities by computing the cosine similarity between the corresponding vectors. The resulting similarity scores are then used to rank the business entities, from the most similar to the least similar. The entities are subsequently grouped according to their similarity score, such that each similarity value is associated with the business entities whose embeddings yield that value when compared with the chunk embedding.
+\vspace{-0.1em}
 
-As a result, each chunk is associated with a ranked list of business entities according to their semantic similarity to the chunk. This allows us to identify the business entities that are potentially related to each chunk while retaining the information for the subsequent filtering steps.
+Each chunk obtained from the previous step, P.1, is represented as an embedding to capture its semantic and linguistic information. Similarly, all business entities identified in P.1 are represented by embeddings of their names. For each chunk, we compare its embedding with the embeddings of all business entities by computing the cosine similarity between the corresponding vectors. The resulting similarity scores are then used to rank the business entities according to their semantic similarity to the chunk. Thus, each chunk is associated with a ranked list of business entities, from the most similar to the least similar.
 
-In this step, we use two parameters to filter the chunks and the associated business entities.
+We then apply two parameters to filter the chunks and their associated business entities. First, we use a similarity threshold to determine whether a chunk is sufficiently related to at least one business entity. The cosine similarity score ranges from 0 to 1, with higher values indicating greater semantic similarity between a chunk and a business entity. We discard a chunk if its highest similarity score is below the selected threshold, as this indicates that the chunk is not sufficiently related to any business entity. After experimenting with different threshold values, we selected a threshold of 0.7.
 
-First, we filter the chunks based on their similarity to the business entities. The cosine similarity score ranges from 0 to 1, with higher values indicating a closer semantic correspondence between a chunk and a business entity. We eliminate chunks for which the highest similarity score does not reach a sufficient level. After experimenting with different threshold values, we selected a threshold of 0.7. Chunks whose highest similarity score is below this threshold are considered insufficiently related to any business entity and are therefore discarded.
+Second, for each remaining chunk, we determine how many similarity scores should be retained. We experimented with retaining the entities corresponding to the top-1, top-2, and top-3 similarity scores. Based on these experiments, we selected the top-3 similarity scores. Thus, for each chunk, we retain the business entities associated with the three highest similarity scores. This choice allows us to preserve several potentially relevant business entities while limiting the amount of irrelevant information introduced at this stage.
 
-Second, we determine how many business entities should be retained for each chunk. We experimented with retaining the entities corresponding to the top-1, top-2, and top-3 similarity scores. Based on these experiments, we selected the top-3 entities for each chunk. This choice allows us to retain several potentially relevant business entities while limiting the amount of irrelevant information introduced at this stage, thereby reducing the risk of losing relevant candidates in the subsequent steps.
+At the end of this step, each retained chunk is associated with the business entities corresponding to its three highest similarity scores.
 
-At the end of this step, we obtain a list of potentially relevant business entities identified from all the chunks generated from the description of a business rule.
+\vspace{-0.5em}
 
-\paragraph{R.3\quad For each business entity identified in R.2, retrieve the list of methods that use it, based on the information obtained in P.2.}\noindent
+\paragraph{R.3\quad Select P.2 methods using business entities identified in R.2}\noindent
+
+\vspace{-0.1em}
 
 The goal of this step is to filter the methods in the source code and retain only those that are likely to implement a given business rule. To this end, we rely on the results of Step (P.2), which provides a list of methods associated with each business entity, as well as the list of business entities identified from the rule description in Step (R.2).
 
-A method is retained only if it uses at least one of the business entities identified as potentially relevant to the business rule. More specifically, we retain methods that are associated with at least one business entity in the list obtained from the chunks of the rule description.
+We retain methods associated with at least one business entity from the list obtained from the chunks of the rule description. This process removes methods with no apparent connection to the rule ( uses other business entities ) , resulting in a smaller set of candidate methods for further analysis. Consequently, developers do not need to inspect the entire codebase but can focus their investigation on methods that are potentially related to the implementation of the business rule.
 
-This filtering process removes methods that have no apparent connection to the business rule, thereby significantly reducing the search space and allowing us to focus on a smaller set of potentially relevant candidate methods.
-
-This approach aims to reduce the search space that developers have to explore when looking for the implementation of a specific business rule. Rather than requiring developers to inspect the entire codebase, the approach directs their investigation toward a smaller collection of candidate methods that are potentially related to the rule.
-
-However, using an OR condition rather than an AND condition in Step (P.3) results in a larger number of methods being retained. We deliberately chose the OR condition to avoid prematurely excluding potentially relevant methods for two main reasons.
-
-First, a business rule may not be implemented by a single method. Its implementation may be distributed across several methods that contribute to different parts of the rule or interact with each other. Requiring a method to be associated with all the identified business entities would therefore risk eliminating methods that implement only one aspect of the rule.
-
-Second, for a given chunk, several business entities may be identified as potential matches. This is particularly relevant when multiple business entities have similar or closely related names. In such cases, retaining all the entities associated with the selected similarity scores helps preserve potentially relevant candidates and reduces the risk of losing the actual business entity involved in the implementation of the rule.
-
-Therefore, the objective of our approach is not to identify a single implementation point or guarantee that the final set contains only the methods implementing the business rule. Instead, the approach aims to guide developers toward the relevant portion of the code by reducing the search space while preserving potentially relevant candidates. In other words, the primary goal is to identify the right collection of candidate methods rather than directly identify the exact implementation of the business rule.
+The primary objective of this step is to maintain a high recall rather than to maximize precision. Since methods discarded at this stage cannot be recovered in others steps, it is essential to ensure that the method implementing the business rule remains among the retained candidates. Some irrelevant methods may therefore be preserved, even if they do not ultimately contribute to the implementation of the rule. This trade-off is intentional: the filtering process should reduce the size of the search space while minimizing the risk of excluding the actual implementation method. Thus, even when the number of candidate methods is substantially reduced, we aim to ensure that the method implementing the business rule remains within the resulting set of candidates.

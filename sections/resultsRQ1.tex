@@ -1,0 +1,49 @@
+\section{Results (RQ1)}
+\label{sec:resultsRQ1}
+
+Our research question is: \textbf{To what extent can our approach identify candidate methods for a given business rule while retaining its correct implementation?}
+
+Our approach does not aim to directly pinpoint the exact code location implementing a business rule. Rather, it is designed to support developers by narrowing the search space to a manageable set of candidate methods. More specifically, the approach filters out methods that are unlikely to be related to the business rule while retaining those that may potentially implement it. The objective is therefore to reduce the search space while ensuring that the method implementing the business rule is not discarded.
+
+This objective affects the choice of evaluation metrics. In particular, we do not include \textbf{Precision} as an evaluation metric. Precision measures the proportion of retrieved methods that are relevant to the business rule. However, its strict interpretation is not well suited to our objective, as it strongly penalizes cases in which multiple candidate methods are returned. For example, returning two candidate methods instead of a single one would reduce precision by half, even though examining two candidate methods remains a simple and time-efficient task for a developer. In our context, a lower precision does not necessarily indicate poor practical performance, as the primary objective is to substantially reduce the search space without excluding the method implementing the business rule.
+
+We therefore use two complementary metrics to assess the effectiveness of our approach. The first metric, \textbf{Success Rate}, corresponds to \textbf{Recall} and measures the proportion of business rules for which the method implementing the rule is successfully retained by the approach. The second metric, \textbf{Search Space Reduction}, measures the proportion of methods eliminated by the approach, thereby quantifying the extent to which the original search space is reduced.
+
+\vspace{-0.3em}
+
+\subsubsection{Success Rate}\noindent
+
+To evaluate our approach, we applied it to a dataset comprising \textbf{100} textual descriptions of business rules. For each description, we examined whether the method associated with the corresponding business rule was retained among the candidate methods returned by the approach. The associated method was successfully retained in \textbf{96 cases (96\%)}, demonstrating that the approach was able to preserve the relevant method for the vast majority of the evaluated business rules. In the remaining \textbf{4 cases (4\%)}, the associated method was not included in the final set of candidate methods. These results indicate that the approach achieves a high recall while substantially narrowing the search space.
+
+\vspace{-0.3em}
+
+\subsubsection{Search Space Reduction}\noindent
+
+We further analyzed the 96 cases in which the method associated with the business rule was successfully retained by our approach. This analysis focuses on the size of the resulting candidate sets and, more importantly, on the extent to which the approach reduces the developer's search space. Table~\ref{tab:search-space-reduction} summarizes the main results.
+
+Across these 96 cases, the number of candidate methods returned by the approach ranged from 2 to 1,248, with a median of 139 methods. Although some business rule descriptions resulted in relatively large candidate sets, half of the cases resulted in fewer than 139 candidate methods.
+
+However, the absolute number of retained methods should not be considered in isolation. We therefore consider the proportion of methods eliminated by the approach to be a more meaningful indicator of its practical contribution. In the studied project, the initial codebase contains 115,829 methods. By restricting the analysis to methods that implement the business logic, we reduce the search space to 14,578 candidate methods. We then applied our approach to these methods to generate a candidate set for each business rule description.
+
+For the 96 successfully retained cases, the approach eliminated the vast majority of the 14,578 candidate methods. Even in the worst-case scenario, where 1,248 methods were retained, the approach eliminated more than 91\% of the candidate methods. In most cases, the reduction was even more substantial.
+
+\begin{table}[h]
+\centering
+\caption{Search space reduction across the 96 successfully retained cases}
+\label{tab:search-space-reduction}
+\begin{tabular}{lr}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Initial codebase & 115,829 methods \\
+Business-logic methods & 14,578 methods \\
+Successfully retained cases & 96 \\
+Minimum candidate methods & 2 \\
+Median candidate methods & 139 \\
+Maximum candidate methods & 1,248 \\
+Minimum search-space reduction & $>91\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These results demonstrate that, despite not necessarily identifying a single implementation method, our approach can considerably narrow the search space. By reducing the number of methods that need to be manually investigated, it provides developers with a more manageable set of candidates and facilitates the subsequent identification of the method implementing the business rule.

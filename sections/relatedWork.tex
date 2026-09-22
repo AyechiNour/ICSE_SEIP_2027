@@ -1,1 +1,15 @@
 \section{Related Work}
+\label{sec:relatedWork}
+
+Understanding how business concepts are represented in source code is essential for identifying and locating business rules in software systems. Several studies have therefore investigated the identification of business variables and other source-code elements that represent domain concepts. Building on this line of research, other approaches have addressed the more specific problem of locating business rules and their implementations in source code. In this section, we first review approaches for identifying business variables and then discuss approaches for locating business rules.
+
+\subsection{Identification of Business Variables}
+\label{sec:businessVar}
+
+Business variables correspond to source-code elements that represent business concepts within a software system. Their identification can provide useful information for understanding how business rules are represented and implemented in the code. Several studies have explored this problem by exploiting the relationship between business variables and the data manipulated by the system. Wang et al.~\cite{Wang08b} for example, consider business variable identification as an initial step in their approach and focus on variables involved in the system's inputs and outputs. They argue that when the database is regarded as a source of input and output data, its fields are likely to contain values corresponding to business variables. Along similar lines, Sneed et al.~\cite{Snee21a} trace output variables back to their origins in the program and show that some of these values can be linked directly to database tables. These studies therefore highlight the relevance of database information for identifying business variables in source code.
+
+In practice, identifying such variables has traditionally relied on manual analysis, often supported by domain experts to determine which program elements correspond to relevant business concepts. Although this approach can provide accurate results for a limited number of variables, it becomes difficult to apply to large industrial systems, where thousands of variables may need to be examined. This motivates the need for automated techniques that can identify business-related source-code elements at a larger scale.
+
+\subsection{Locating Business rules}
+
+J'ai besoin de lire ..
