@@ -21,6 +21,7 @@
 % whether page numbers should be shown or not, use 'plain' for review versions, 'empty' for camera ready
 \newcommand\vldbpagestyle{plain} 
 
+\settopmatter{printfolios=true}
 
 %%%%% My macros
 \input{macros}
@@ -30,7 +31,11 @@
 \usepackage{booktabs}  % For better horizontal rules
 
 \begin{document}
-\title{Locating business rules (To be changed)}
+
+\pagestyle{plain}
+\thispagestyle{plain}
+
+\title{Locating Business Rule Implementations by Combining Source Code and Documentation}
 
 %%
 %% The "author" command and its associated commands are used to define the authors and their affiliations.
@@ -55,7 +60,7 @@
 \author{Christopher Fuhrman}
 \orcid{0000-0001-8010-1087}
 \affiliation{%
-  \institution{Ecole de technologie superieure ´}
+  \institution{École de technologie supérieure}
   \city{Montreal}
   \country{Canada}
 }
@@ -79,13 +84,17 @@
 }
 \email{anne.etien@univ-lille.fr}
 
+%%
+%% Anonymous authors for double-blind review
+%\author{Anonymous Authors}
+
 \input{sections/abstract.tex}
 
 \maketitle
 
 \input{sections/introduction.tex}
 
-\input{sections/background.tex}
+%\input{sections/background.tex}
 
 \input{sections/relatedWork.tex}
 
@@ -95,19 +104,19 @@
 
 \input{sections/evaluation.tex}
 
-\input{sections/caseStudy.tex}
+%\input{sections/caseStudy.tex}
 
-\input{sections/resultsRQ1.tex}
+\input{sections/results.tex}
 
-\input{sections/postApproach.tex}
+%\input{sections/postApproach.tex}
 
-\input{sections/resultsRQ2.tex}
+%\input{sections/resultsRQ2.tex}
 
 \input{sections/discussion.tex}
 
 \input{sections/threatsToValidity.tex}
 
-\input{sections/futureWork.tex}
+%\input{sections/futureWork.tex}
 
 \input{sections/conclusion.tex}
 

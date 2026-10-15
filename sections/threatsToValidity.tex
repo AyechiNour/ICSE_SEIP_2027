@@ -7,10 +7,14 @@ Our study is subject to several threats to validity.
 
 Our evaluation is conducted on a single large industrial Java application. Its architecture, business domain, naming conventions, and documentation practices may differ from those of other legacy systems. In particular, the presence of business-rule identifiers and contextual information in the available artifacts may not be common across other projects. Further evaluations on different systems and domains are therefore necessary to assess the generalizability of our findings.
 
-\subsection{Search Space Reduction vs. Developer Effort}
+\subsection{Dependence on Structured Documentation}
 
-Although our approach substantially reduces the number of methods that developers need to investigate, the size of the resulting candidate set does not directly measure the actual effort required to identify the correct implementation. Two candidate sets of the same size may require substantially different levels of investigation depending on the complexity and relationships between the methods. A developer study would therefore be necessary to determine whether the observed search-space reduction translates into a measurable reduction in maintenance effort.
+The documentation-based refinement stage assumes that business rules are described in structured documentation that provides contextual information about the rule. At a minimum, we assume that each documentation file has a title that identifies the business concept or functional area to which the described rules belong. This assumption allows us to associate a business rule with the classes corresponding to its documentation context. However, documentation may not always follow such an organization, and some projects may provide business rules without meaningful file or section titles. In such cases, the documentation-based refinement stage may provide limited benefits or may not be applicable. The source-code-based stage does not depend on this assumption and can therefore be applied independently of the availability of such contextual documentation.
 
 \subsection{Dependence on Parameter Selection}
 
 The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, different configurations may lead to different trade-offs between recall and search-space reduction. Similarly, the effectiveness of the context-based refinement depends on the availability and quality of contextual information in document and section names.
+
+\subsection{Single Target Method Assumption}
+
+Our evaluation assumes that each business rule can be associated with a single target implementing method. However, a business rule may in practice be implemented across multiple methods. In such cases, the approach may retain a method that contributes to the implementation of the rule without retaining the specific method identified as the target in our ground truth. Such a result would be considered a failure according to our Success Rate, even though the approach may have successfully identified part of the rule's implementation. This assumption may therefore underestimate the effectiveness of the approach when business rules are implemented across multiple methods.
