@@ -1,20 +1,32 @@
-\section{Threats To Validity}
+\section{Threats to Validity}
 \label{sec:threats}
 
-Our study is subject to several threats to validity.
+Our study is subject to several threats to validity, which we discuss in terms of internal and external validity.
 
-\subsection{Evaluation on a Single Industrial System}
+\subsection{Internal Validity}
 
-Our evaluation is conducted on a single large industrial Java application. Its architecture, business domain, naming conventions, and documentation practices may differ from those of other legacy systems. In particular, the presence of business-rule identifiers and contextual information in the available artifacts may not be common across other projects. Further evaluations on different systems and domains are therefore necessary to assess the generalizability of our findings.
+\paragraph{Parameter selection.}\noindent
 
-\subsection{Dependence on Structured Documentation}
+The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, other configurations may lead to different trade-offs between retaining the reference method and reducing the candidate set size. The results should therefore be interpreted in the context of the selected configuration.
 
-The documentation-based refinement stage assumes that business rules are described in structured documentation that provides contextual information about the rule. At a minimum, we assume that each documentation file has a title that identifies the business concept or functional area to which the described rules belong. This assumption allows us to associate a business rule with the classes corresponding to its documentation context. However, documentation may not always follow such an organization, and some projects may provide business rules without meaningful file or section titles. In such cases, the documentation-based refinement stage may provide limited benefits or may not be applicable. The source-code-based stage does not depend on this assumption and can therefore be applied independently of the availability of such contextual documentation.
+\paragraph{Ground truth construction.}\noindent
 
-\subsection{Dependence on Parameter Selection}
+Our evaluation relies on a reference method associated with each business rule, identified using the available documentation and source-code information. The reliability of the evaluation therefore depends on the correctness of these associations. If a reference method is incorrectly identified or does not fully represent the implementation of its corresponding rule, the evaluation metrics may not accurately reflect the approach's effectiveness.
 
-The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, different configurations may lead to different trade-offs between recall and search-space reduction. Similarly, the effectiveness of the context-based refinement depends on the availability and quality of contextual information in document and section names.
+\paragraph{Single target method assumption.}\noindent
 
-\subsection{Single Target Method Assumption}
+Our evaluation assumes that each business rule is associated with a single target method. However, a business rule may be implemented across multiple methods that collaborate to realize its logic. Consequently, the approach may identify a method that contributes to the implementation without retaining the specific method designated as the reference. Such a case would be counted as a failure according to our Success Rate, even if part of the rule's implementation had been identified. This assumption may therefore underestimate the effectiveness of the approach for rules whose implementations span multiple methods.
 
-Our evaluation assumes that each business rule can be associated with a single target implementing method. However, a business rule may in practice be implemented across multiple methods. In such cases, the approach may retain a method that contributes to the implementation of the rule without retaining the specific method identified as the target in our ground truth. Such a result would be considered a failure according to our Success Rate, even though the approach may have successfully identified part of the rule's implementation. This assumption may therefore underestimate the effectiveness of the approach when business rules are implemented across multiple methods.
+\subsection{External Validity}
+
+\paragraph{Evaluation on a single industrial system.}\noindent
+
+Our evaluation is conducted on a single large industrial Java application developed by Berger-Levrault. Its architecture, business domain, naming conventions, and development practices may differ from those of other legacy systems. Moreover, although our evaluation covers 100 business rules from different parts of the documentation, these rules may not represent the full diversity of business rules encountered in other applications. Further evaluations on systems from different domains are needed to assess the generalizability of our findings.
+
+\paragraph{Dependence on structured documentation.}\noindent
+
+The approach uses contextual information from business-rule documentation to refine the candidate methods. In particular, this refinement assumes that documentation files provide meaningful titles that identify the relevant business concepts or functional areas. However, documentation practices vary across projects, and some systems may provide unstructured descriptions or lack informative file and section titles. In such cases, the benefits of documentation-based refinement may be limited, or this refinement may require adaptation. The source-code-based part of the approach does not depend on this specific documentation structure and can be applied independently.
+
+\paragraph{Dependence on project-specific conventions.}\noindent
+
+The effectiveness of the approach may also depend on conventions specific to the evaluated system, including the representation of business entities in the source code and the correspondence between documentation terminology and source-code names. Other systems may use different naming conventions, architectural patterns, or persistence mechanisms. Applying the approach to such systems may require adapting the identification of business entities and the use of contextual information. Evaluations on additional systems would help determine which parts of the approach can be reused directly and which require adaptation.

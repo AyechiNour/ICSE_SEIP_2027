@@ -1,11 +1,13 @@
 \section{Related Work}
 \label{sec:relatedWork}
 
-Research on business rules in software engineering has addressed their definition, characterization, and extraction from software artifacts. Comparatively less attention has been given to the problem of locating the implementation of a known business rule in source code. This distinction is important: characterization aims to describe the nature and structure of business rules, extraction seeks to recover business rules from software artifacts, whereas localization starts from a known rule and seeks to identify the source-code elements that implement it.
+Research on business rules in software engineering has addressed their definition, characterization, and extraction from software artifacts. Comparatively less attention has been given to locating the implementation of a known business rule in source code. These tasks differ in their objectives: characterization describes the nature and structure of business rules, extraction aims to recover rules from software artifacts, whereas localization starts from a known rule and seeks to identify its implementation in source code.
 
-In this section, we first review existing work on the definition and characterization of business rules, followed by approaches for extracting business rules from source code, databases, and more recently using large language models. We then examine research related to business-rule localization, including documentation-to-source-code traceability and the identification of business variables. Finally, we discuss limitations in how these approaches are evaluated and highlight the challenges that motivate our work.
+In this section, we first review existing definitions and characterizations of business rules. We then examine how business vocabulary is represented in source code through business classes and variables, and how these elements relate to the identification of business-related code. Next, we review approaches for extracting business rules from source code, database metadata, and, more recently, using large language models (LLMs). We then discuss the limitations of existing evaluation practices before examining research on business-rule localization, with a focus on documentation-to-source-code traceability. Finally, we highlight the limitations of existing approaches in locating the method implementing a business rule from its textual description.
 
 \subsection{Business Rule Definitions and Characterization}
+
+To understand business rules, it is necessary to examine how they are defined and characterized.
 
 \subsubsection{Definition of a Business Rule}\noindent
 
@@ -19,22 +21,24 @@ These definitions provide useful abstractions for identifying business logic in 
 
 \subsection{Business Vocabulary and Code Elements}
 
+Understanding how business vocabulary is represented in source code helps identify relevant code elements.
+
 \subsubsection{Business Vocabulary}\noindent
 
 A business vocabulary captures the concepts and relationships of a business domain. Prakash \etal~\cite{Prak21a} define it as a set of interconnected concepts consisting of \textit{business terms}, which represent domain entities and concepts, and verbs, which express relationships between them. Examples of business terms include \textit{Currency}, \textit{Customer}, \textit{Operation} and \textit{Operational Cost}~\cite{Ayac26a}.
 
-\subsubsection{Business Classes and Business Variables}\noindent
-
-Business terms can be represented in source code through \textit{business variables}, which provide concrete representations of business concepts~\cite{Wang08b}. These variables are associated with \textit{business classes}, which define the structure and behavior of the corresponding objects~\cite{Ayac26a}. For example, the business term \textit{operation} can be represented by the class \texttt{Operation}, while variables such as \texttt{op1} and \texttt{op2} represent instances of this class.
-
-\subsubsection{Identification of Business Variables}\noindent
+\subsubsection{Business Vocabulary in Source Code}\noindent
 \label{sec:businessVar}
 
-Business variables correspond to source-code elements that represent business concepts within a software system. Their identification can provide useful information for understanding how business rules are represented and implemented in the code. Several studies have explored this problem by exploiting the relationship between business variables and the data manipulated by the system. Wang et al.~\cite{Wang08b} for example, consider business variable identification as an initial step in their approach and focus on variables involved in the system's inputs and outputs. They argue that when the database is regarded as a source of input and output data, its fields are likely to contain values corresponding to business variables. Along similar lines, Sneed et al.~\cite{Snee21a} trace output variables back to their origins in the program and show that some of these values can be linked directly to database tables. These studies therefore highlight the relevance of database information for identifying business variables in source code.
+\textit{Business terms} can be represented in source code through \textit{business variables}, which provide concrete representations of business vocabulary~\cite{Wang08b}, and \textit{business classes}, which define the structure and behavior of the corresponding objects~\cite{Ayac26a}. For example, the business term \textit{operation} can be represented by the class \texttt{Operation}, while variables such as \texttt{op1} and \texttt{op2} represent instances of this class. Identifying these source-code elements can help understand how business concepts, and ultimately business rules, are represented and implemented in a software system.
 
-In practice, identifying such variables has traditionally relied on manual analysis, often supported by domain experts to determine which program elements correspond to relevant business concepts. Although this approach can provide accurate results for a limited number of variables, it becomes difficult to apply to large industrial systems, where thousands of variables may need to be examined. This motivates the need for automated techniques that can identify business-related source-code elements at a larger scale.
+Several studies have investigated the identification of business variables by exploiting their relationships with the data manipulated by the system. Wang et al.~\cite{Wang08b} consider this identification as an initial step in their approach and focus on variables involved in system inputs and outputs. They argue that when the database is regarded as a source of input and output data, its fields are likely to contain values corresponding to business variables. Similarly, Sneed et al.~\cite{Snee21a} trace output variables back to their origins in the program and show that some of these values can be linked directly to database tables. These studies highlight the relevance of database information for identifying business-related elements in source code. However, manually identifying such elements can be difficult in large industrial systems, where numerous variables must be examined, often with the support of domain experts.
+
+In object-oriented systems, business classes offer an alternative starting point by grouping related attributes and behavior around business concepts. In our previous work~\cite{Ayac26a}, we explored this approach by focusing on persistent business classes, which are mapped to database tables through the Object-Relational Mapping (ORM) layer. This relationship provides a structural link between business data and its representation in source code, which can be exploited to identify code elements relevant to business rules.
 
 \subsection{Extraction of Business Rules}
+
+Business rules can be extracted from various software artifacts using different techniques.
 
 \subsubsection{Extraction of Business Rules from Source Code}\noindent
 
@@ -48,24 +52,25 @@ Business rules have also been extracted from database artifacts. Chaparro \etal~
 
 \subsubsection{Extraction of Business Rules Using LLMs}\noindent
 
-More recently, large language models have been used to extract business rules from source code. Miskell \etal~\cite{Misk23a}, for example, proposed an approach that uses LLMs to analyze Java classes and methods and generate business rules expressed as natural-language sentences. While such approaches demonstrate the potential of LLMs for recovering business knowledge from code, they start from source code and attempt to recover the corresponding rules. Our work addresses the inverse problem: given a textual description of a known business rule, locating its implementation in the source code.
+More recently, large language models have been used to extract business rules from source code. Miskell \etal~\cite{Misk23a}, for example, proposed an approach that uses LLMs to analyze Java classes and methods and generate business rules expressed as natural-language sentences. While such approaches demonstrate the potential of LLMs for recovering business knowledge from code, they start from source code and attempt to recover the corresponding rules. Our work addresses the inverse problem: given a textual description of a known business rule, locating its implementing method.
+
+\subsection{Limitations in Evaluating the Approaches}
+\label{sec:limitations}
+
+Despite the progress made in business-rule extraction, evaluating these approaches remains challenging. Several studies~\cite{Chia06a,Snee96a} do not report an empirical evaluation, while others~\cite{Wang04b,Wang04a,Snee20b,Chap12a,Wang08a} use basic indicators, such as the number of rules or business-related elements identified. However, the actual number of business rules present in a software system is rarely known, making it difficult to assess how completely an approach covers the existing rules. Expert-based validation~\cite{Gang09a} can provide valuable evidence, but manually examining a large set of extracted rules requires substantial effort. More recent approaches using LLMs~\cite{Misk23a} introduce another consideration: reproducibility. Their outputs may vary across executions, even when the same input is provided, which can make the results of an evaluation less consistent.
 
 \subsection{Locating Business Rules}
 
 While characterization and extraction are well studied, the explicit localization of business rules in source code remains underexplored and challenging in complex systems. Related research can be found in areas such as documentation-to-source-code traceability, feature and concept location, and the identification of business-related elements in source code.
 
-\subsection{Limitations in Evaluating the Approaches}\label{sec}
-
-Despite the progress made in business-rule extraction, evaluating these approaches remains challenging. Several studies~\cite{Chia06a,Snee96a} do not report an empirical evaluation, while others~\cite{Wang04b,Wang04a,Snee20b,Chap12a,Wang08a} use basic indicators, such as the number of rules or business-related elements identified. However, the actual number of business rules present in a software system is rarely known, making it difficult to assess how completely an approach covers the existing rules. Expert-based validation~\cite{Gang09a} can provide valuable evidence, but manually examining a large set of extracted rules requires substantial effort. More recent approaches using LLMs~\cite{Misk23a} introduce another consideration: reproducibility. Their outputs may vary across executions, even when the same input is provided, which can make the results of an evaluation less consistent.
-
-\subsection{Traceability Between Documentation and Source Code}
+\subsubsection{Traceability Between Documentation and Source Code}\noindent
 
 Traceability between software documentation and source code has been widely studied to help developers find the code related to requirements and other documented information. Existing approaches use different techniques, such as information retrieval, machine learning, and source-code analysis, to identify links between documentation and code.
 
-Antoniol et al.~\cite{Anto02b} proposed an information retrieval approach to link source code with free-text documentation. Their method uses code identifiers, such as class and method names, to search for relevant documents and rank them according to their textual similarity. Their results showed that this approach can identify relevant links while reducing the number of documents that need to be examined.
+Antoniol et al.~\cite{Anto02b} proposed an information retrieval approach to link source code with free-text documentation. Their method uses code identifiers, such as class and method names, to search for relevant documents and rank them according to their textual similarity. Their results showed that this approach can identify relevant links while reducing the number of documents that developers need to examine during the search process.
 
 Other studies have tried to improve these links by using additional information. Cao et al.~\cite{Cao18a} used machine learning to distinguish code elements that are important to a document from those mentioned only as context. Their approach uses textual and structural information to identify more relevant links. Ali et al.~\cite{Ali11a} proposed Coparvo, which separates source code into different parts, such as class names, method names, variable names, and comments. These parts help assess the links initially identified through information retrieval and reduce false positives.
 
-Some approaches combine several techniques to improve the results. Eaddy et al.~\cite{Eaddy08a} proposed CERBERUS, which combines information retrieval with dynamic analysis and program dependency analysis to identify code related to software requirements. More recently, Keim et al.~\cite{Keim24a} proposed TransArC to link architectural documentation to source code through an intermediate architecture model. Their approach uses information such as naming similarities, package structures, and relationships between software components.
+Some approaches combine several techniques to improve the results. Eaddy et al.~\cite{Eaddy08a} proposed CERBERUS, which combines information retrieval with dynamic analysis and program dependency analysis to identify code related to software requirements. More recently, Keim et al.~\cite{Keim24a} proposed TransArC to link architectural documentation to source code through an intermediate architecture model. Their approach uses information such as naming similarities, package structures, and inter-component relationships.
 
 Although these approaches help developers link documentation to source code, they address a different problem and do not directly fit our needs. Most of them aim to link general requirements or documents to code elements. In our case, the task is more specific: we start from the description of a single business rule, which provides limited information compared with the larger amount of documentation used in some existing approaches. Moreover, we aim to identify the specific method that implements the rule, rather than a broader set of related code elements. Our approach therefore operates at a finer level of granularity and must identify the implementing method using limited textual information.

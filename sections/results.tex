@@ -1,65 +1,44 @@
 \section{Results}
 \label{sec:results}
 
-To evaluate the effectiveness of the approach in retaining relevant implementations while reducing the number of candidate methods, we use two metrics. The first metric, \textbf{Success Rate}, measures the proportion of business rules for which the method implementing the rule is successfully retained by the approach. The second metric, \textbf{Search Space Reduction}, measures the proportion of methods eliminated by the approach, thereby quantifying the extent to which the original search space is reduced. Both metrics are computed after each stage of the approach, allowing us to assess the contribution of each stage separately and to observe how the candidate set evolves throughout the process.
+To evaluate the effectiveness of our approach in retaining relevant implementations while limiting the effort required to inspect candidate methods, we use two metrics.
 
-\subsection{Source Code-Based Candidate Method Selection}
+The first metric, \textbf{Success Rate}, measures the proportion of business rules for which the reference method is retained among the candidate methods produced by our approach. It shows how often the approach successfully retains the expected implementation of a rule. A higher Success Rate means that fewer business rules are missed during the localization process.
 
-\subsubsection{Success Rate}\noindent
+The second metric, \textbf{Recovery Effort Index (REI)}, is inspired by the metric introduced by Antoniol et al.~\cite{Anto02a} to estimate the effort required to recover traceability links between source code and documentation. In their work, REI is defined as the ratio of retrieved documents to the total number of available documents. Following the same principle, we adapt this metric to our context by calculating the proportion of methods retained as candidates relative to the initial set of methods considered. It is calculated as follows:
 
-To evaluate our approach, we applied it to a dataset comprising \textbf{100} textual descriptions of business rules. The ground-truth implementation method was successfully retained for \textbf{96 of the 100 business rules (96\%)}. This result shows that the approach preserves the relevant implementation method for the vast majority of the evaluated rules while substantially narrowing the search space.
+\[
+\textbf{REI} = \frac{\text{Number of retained methods}}{\text{Total number of initial methods}} \times 100
+\]
+\\
+A lower REI indicates that fewer methods need to be examined, reducing the effort required to locate a business rule's implementation. It reflects how the approach narrows the search space while keeping the candidate set manageable for developers.
 
-\subsubsection{Search Space Reduction}\noindent
+Both metrics are computed on the final results, providing complementary insights into the effectiveness of the approach.
 
-We further analyzed the 96 cases in which the method associated with the business rule was successfully retained by our approach. This analysis focuses on the size of the resulting candidate sets and, more importantly, on the extent to which the approach reduces the developer's search space. Table~\ref{tab:search-space-reduction} summarizes the main results.
+\subsection{Success Rate}
 
-Across these 96 cases, the number of candidate methods returned by the approach ranged from 2 to 1,248, with a median of 139 methods. Although some business rule descriptions resulted in relatively large candidate sets, half of the cases resulted in fewer than 139 candidate methods.
+To evaluate our approach, we applied it to a dataset comprising \textbf{100} textual descriptions of business rules. The ground-truth implementation method was successfully retained for \textbf{94 of the 100 business rules (94\%)}. This result shows that the approach preserves the relevant implementation method for the vast majority of the evaluated rules while substantially narrowing the search space.
 
-However, the absolute number of retained methods should not be considered in isolation. We therefore consider the proportion of methods eliminated by the approach to be a more meaningful indicator of its practical contribution. In the studied project, the initial codebase contains 115,829 methods. By restricting the analysis to methods that implement the business logic, we reduce the search space to 14,578 candidate methods. We then applied our approach to these methods to generate a candidate set for each business rule description.
+\subsection{Recovery Effort Index}
 
-For the 96 successfully retained cases, the approach eliminated the vast majority of the 14,578 candidate methods. Even in the worst-case scenario, where 1,248 methods were retained, the approach eliminated more than 91\% of the candidate methods. In most cases, the reduction was even more substantial.
+We further analyzed the \textbf{94 cases} in which the reference method was successfully retained after applying the approach. We evaluated the Recovery Effort Index (REI), which measures the proportion of candidate methods relative to the initial set of \textbf{14,578 business-logic methods}. Table~\ref{tab:rei_results} summarizes the results.
 
-\begin{table}[h]
+\begin{table}[htbp]
 \centering
-\caption{Search space reduction across the 96 successfully retained cases}
-\label{tab:search-space-reduction}
+\caption{Candidate-set size and Recovery Effort Index}
+\label{tab:rei_results}
 \begin{tabular}{lc}
 \hline
 \textbf{Metric} & \textbf{Value} \\
 \hline
-Initial codebase & 115,829 methods \\
-Business-logic methods & 14,578 methods \\
-Successfully retained cases & 96 \\
-Minimum candidate methods & 2 \\
-Median candidate methods & 139 \\
-Maximum candidate methods & 1,248 \\
-Minimum search-space reduction & $>91\%$ \\
-\hline
-\end{tabular}
-\end{table}
-
-These results demonstrate that, despite not necessarily identifying a single implementation method, our approach can considerably narrow the search space. By reducing the number of methods that need to be manually investigated, it provides developers with a more manageable set of candidates and facilitates the subsequent identification of the method implementing the business rule.
-
-
-\subsection{Documentation-Based Candidate Method Refinement}
-
-\begin{table}[htbp]
-\centering
-\caption{Candidate-set size and recall after applying documentation-based context.}
-\label{tab:rq2_results}
-\begin{tabular}{lc}
-\hline
-\textbf{Metric} & \textbf{After context filtering} \\
-\hline
 Successfully retained cases & 94 \\
+Initial business-logic methods & 14,578 \\
 Minimum candidate methods & 2 \\
 Median candidate methods & 18.5 \\
 Maximum candidate methods & 179 \\
-Minimum search-space reduction & 99\% \\
+Maximum REI & 1.23\% \\
 \hline
 \end{tabular}
 \end{table}
 
-Applying the information extracted from the documentation further reduces the size of the candidate method sets while maintaining a high recall. The results obtained after applying the context-based filtering are summarized in Table~\ref{tab:rq2_results}. Compared with the results obtained by the main approach presented in the previous section, the candidate sets are substantially reduced, with the median number of candidates decreasing from 139 to 18.5 methods. The worst-case search space reduction also increases from 91\% to 99\%.
-
-This additional reduction is achieved with only a slight decrease in recall, from 96\% to 94\%. These results show that the information provided by the document and section names can effectively complement the main approach by further refining the candidate sets while preserving most of the correct implementations.
+Across the \textbf{94 cases}, the number of candidate methods ranged from \textbf{2} to \textbf{179}, with a median of \textbf{18.5}. The REI remained below \textbf{1.23\%} in all cases, indicating that only a small fraction of the initial business-logic methods was retained for each rule. This reduction in candidate-set size limits the scope of the investigation to methods that are potentially related to the rule description, rather than requiring consideration of the entire business-logic subset. Moreover, the reference method was retained in all \textbf{94 cases} considered in this analysis, showing that the smaller candidate sets were obtained without excluding the expected implementation in these cases. Overall, these results demonstrate the ability of the approach to narrow down potential implementations, thereby reducing the effort required to investigate candidate methods while preserving the reference method.
