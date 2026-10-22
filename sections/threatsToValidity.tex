@@ -1,17 +1,17 @@
 \section{Threats to Validity}
 \label{sec:threats}
 
-Our study is subject to several threats to validity, which we discuss in terms of internal and external validity.
+We focus on internal and external validity because the main limitations of our study concern the factors that may affect the evaluation results and the extent to which these results can be generalized beyond the studied system. Internal validity addresses potential influences on the observed results, while external validity considers the applicability of our findings to other systems and contexts.
 
 \subsection{Internal Validity}
 
 \paragraph{Parameter selection.}\noindent
 
-The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, other configurations may lead to different trade-offs between retaining the reference method and reducing the candidate set size. The results should therefore be interpreted in the context of the selected configuration.
+The results may be influenced by the parameter choices used in our approach, particularly the cosine-similarity threshold of 0.7 and the selection of the top-3 business entities for each chunk. Although these values were determined through experimentation, other configurations may lead to different trade-offs between retaining the reference method and reducing the candidate set size.
 
 \paragraph{Ground truth construction.}\noindent
 
-Our evaluation relies on a reference method associated with each business rule, identified using the available documentation and source-code information. The reliability of the evaluation therefore depends on the correctness of these associations. If a reference method is incorrectly identified or does not fully represent the implementation of its corresponding rule, the evaluation metrics may not accurately reflect the approach's effectiveness.
+Our evaluation relies on a reference method associated with each business rule, identified using the available documentation and source-code information. To assess the correctness of these associations, we manually verified them by examining the documentation and the corresponding source code. Nevertheless, the reliability of the evaluation depends on the accuracy of the reference methods. If a reference method is incorrectly identified or does not fully represent the implementation of its corresponding rule, the evaluation metrics may not accurately reflect the approach's effectiveness.
 
 \paragraph{Single target method assumption.}\noindent
 
@@ -25,7 +25,7 @@ Our evaluation is conducted on a single large industrial Java application develo
 
 \paragraph{Dependence on structured documentation.}\noindent
 
-The approach uses contextual information from business-rule documentation to refine the candidate methods. In particular, this refinement assumes that documentation files provide meaningful titles that identify the relevant business concepts or functional areas. However, documentation practices vary across projects, and some systems may provide unstructured descriptions or lack informative file and section titles. In such cases, the benefits of documentation-based refinement may be limited, or this refinement may require adaptation. The source-code-based part of the approach does not depend on this specific documentation structure and can be applied independently.
+The approach uses contextual information from business-rule documentation to refine the candidate methods. This refinement assumes that a minimum amount of contextual information is available, namely, a file title when business-rule descriptions are stored in a file. Although the approach does not require a highly structured documentation format, the absence of informative file titles may limit the effectiveness of this refinement. Documentation practices vary across projects, and some systems may provide unstructured descriptions or lack meaningful titles that identify the relevant business concepts or functional areas. In such cases, the benefits of documentation-based refinement may be limited, or this step may require adaptation. The source-code-based part of the approach does not depend on this specific documentation structure and can be applied independently.
 
 \paragraph{Dependence on project-specific conventions.}\noindent
 

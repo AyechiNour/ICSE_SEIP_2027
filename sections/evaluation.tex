@@ -3,9 +3,10 @@
 
 Evaluating our approach requires a reference dataset that establishes an explicit link between a textual description of a business rule and its implementation in the source code. More specifically, for each business rule used during the evaluation, we need to identify the specific code location responsible for implementing it, providing a reference against which the retrieved candidates can be evaluated.
 
-However, establishing such links is challenging in the context of legacy software systems. In practice, source code and business documentation are often maintained as separate artifacts. Although documentation may contain detailed descriptions of business rules, it generally does not explicitly indicate where these rules are implemented in the source code. Conversely, the source code may contain the implementation of a business rule without providing a direct reference to its corresponding documentation. Consequently, the lack of traceability between business rules and their implementations makes it difficult to construct a reliable ground-truth dataset for evaluating rule-location approaches.
+However, establishing such links is challenging in the context of legacy software systems. In practice, source code and business documentation are often maintained as separate artifacts. Although documentation may contain detailed descriptions of business rules, it generally does not explicitly indicate where these rules are implemented in the source code, as its primary purpose is to describe business requirements and behavior rather than their technical implementation. Conversely, the source code may contain the implementation of a business rule without providing a direct reference to its corresponding documentation. Consequently, the lack of traceability between business rules and their implementations makes it difficult to construct a reliable ground-truth dataset for evaluating rule-location approaches.
 
 This issue is not limited to legacy systems. Although newer software projects may provide more detailed documentation of their business functionality, it remains difficult to find open-source projects that combine detailed business-rule descriptions with explicit links to their implementations. Publicly available datasets linking individual business rules to their implementing code are particularly rare, as such links are not usually maintained as part of project documentation. Consequently, few projects provide the information required to evaluate our approach. This limits our ability to conduct the evaluation across multiple open-source systems and requires manual reconstruction of such links when suitable projects are available, which can be time-consuming and requires careful inspection of the source code.
+
 \subsection{Case Study}
 
 We therefore conducted our evaluation on a large-scale industrial software system developed by Berger-Levrault. Table~\ref{tab:case-study} summarizes the main characteristics of the industrial case study.
@@ -30,11 +31,11 @@ Documentation & Limited and incomplete \\
 
 By examining the available documentation and source code, we determined \textbf{100 business rules} for which a link to their implementation in the source code could be established. These rules constitute our evaluation dataset. The business rules are identified by unique identifiers in the documentation. For a subset of these rules, the corresponding identifiers can also be found in the source code, either in method names or in comments associated with the implementing code. These occurrences provide evidence that the corresponding method or code section implements the business rule identified by the matching identifier. Based on these identifiers, we established a ground-truth link between each selected rule and its implementing method. This ground truth allows us to assess whether the method implementing a given rule is retained among the candidate methods produced by our approach.
 
-In this evaluation, each business rule is linked to a single reference method, identified by its identifier in the documentation. We acknowledge that a business rule may involve multiple methods that collaborate to implement its logic, for example, when one method calls another or delegates part of the validation process. However, these supporting methods are not considered separate reference implementations in our dataset. Our evaluation therefore focuses on whether the main method associated with each rule is retained among the retrieved candidates, without assessing other methods that may contribute to its implementation.
+In this evaluation, each business rule is linked to a single reference method, identified by its identifier in the documentation. We acknowledge that a business rule may involve multiple methods that collaborate to implement its logic, for example, when one method calls another or delegates part of the validation process. However, supporting methods are not individually identified in the documentation as implementing a specific business rule. Our evaluation therefore focuses on whether the main method associated with each rule is retained among the retrieved candidates, without assessing other methods that may contribute to its implementation.
 
 \subsection{Application of the Approach}
 
-We demonstrate an application of the apply the proposed approach following the steps described in Section~\ref{sec:approach}.
+We demonstrate an application of the proposed approach following the steps described in Section~\ref{sec:approach}.
 
 \subsubsection{Preliminary Steps}\noindent
 
@@ -48,24 +49,8 @@ These structural and behavioral characteristics allow us to distinguish classes 
 
 \textbf{P.2 — Identify the methods that manipulate each business entity}
 
-Although our approach can be applied to the entire source code, we focus our evaluation on the classes identified by domain experts as responsible for implementing business logic. This choice allows us to focus the analysis on the part of the codebase where business rules are expected to be implemented. While the application contains \textbf{115,829 methods} in total, the selected subset comprises \textbf{14,578 methods}.
-
-Within this subset, for each identified business class, we collect the methods that reference the class. Similarly, for each business attribute, we collect the methods that access it through its corresponding accessor methods, namely its getter and setter methods. These associations provide, for each business entity, the set of methods that may manipulate or use it and therefore may participate in the implementation of a business rule.
+Although our approach can be applied to the entire source code, we focus our evaluation on the classes identified by domain experts as responsible for implementing business logic. Based on their knowledge of the application, these experts identified the classes that contain the business logic, allowing us to exclude parts of the codebase that are less relevant to the implementation of business rules. This restriction provides a more targeted evaluation while preserving a substantial search space. Although the application contains \textbf{115,829 methods} in total, the selected subset still comprises \textbf{14,578 methods} that must be searched to locate the implementation of a given business rule.
 
 \subsubsection{Rule-Specific Steps}\noindent
 
-\textbf{R.1 — Extract business vocabulary from the business rule description}
-
-The set of 100 business rule descriptions serves as input for R.1. The descriptions are processed individually, one at a time. For each business rule description, we first remove the stop words to retain the terms most relevant to its meaning. We then generate chunks by considering all possible combinations of consecutive words in the resulting description. This exhaustive chunk generation allows different portions of the business rule to be considered at different granularities, increasing the chances of capturing relevant business terms despite variations in wording.
-
-\textbf{R.2 — Map business vocabulary to the entities identified in P.1}
-
-For each chunk extracted in R.1, we identify the business entities to which its terms refer. This step relies on the business entities identified during the preliminary phase (P.1). By comparing the terms contained in each chunk with the representations of the business entities, we determine the entities that are potentially relevant to each portion of the business rule description. As a result, each relevant chunk is associated with a set of business entities that capture the business concepts expressed in that portion of the description. The business entities identified across all relevant chunks of a given business rule description are then collected and used as input for the next step of the approach.
-
-\textbf{R.3 — Select the methods identified in P.2 that manipulate the entities mapped in R.2}
-
-For each business entity identified in R.2, we retrieve the methods that use or reference that entity. This information is obtained from the associations established in P.2, where each business entity is associated with a set of methods that reference it. The retrieved methods form the candidate set associated with the corresponding business entity. By performing this retrieval for each identified business entity, we obtain a set of candidate methods that may implement the business rule and can be investigated by the developer.
-
-\textbf{R.4 — Refine the candidate methods using information extracted from the documentation}
-
-For each business rule, we retrieve from the documentation the title and section in which the rule is described. We then examine the classes containing the candidate methods produced by the first stage. A candidate method is retained if its containing class is associated with the title of the documentation file corresponding to the rule.
+The set of 100 business rule descriptions serves as input to the rule-specific steps. Each description is processed individually, with steps R.1, R.2, R.3, and R.4 applied sequentially.

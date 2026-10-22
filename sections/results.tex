@@ -5,7 +5,7 @@ To evaluate the effectiveness of our approach in retaining relevant implementati
 
 The first metric, \textbf{Success Rate}, measures the proportion of business rules for which the reference method is retained among the candidate methods produced by our approach. It shows how often the approach successfully retains the expected implementation of a rule. A higher Success Rate means that fewer business rules are missed during the localization process.
 
-The second metric, \textbf{Recovery Effort Index (REI)}, is inspired by the metric introduced by Antoniol et al.~\cite{Anto02a} to estimate the effort required to recover traceability links between source code and documentation. In their work, REI is defined as the ratio of retrieved documents to the total number of available documents. Following the same principle, we adapt this metric to our context by calculating the proportion of methods retained as candidates relative to the initial set of methods considered. It is calculated as follows:
+The second metric, \textbf{Recovery Effort Index (REI)}, is inspired by the metric introduced by Antoniol et al.~\cite{Anto02b} to estimate the effort required to recover traceability links between source code and documentation. In their work, REI is defined as the ratio of retrieved documents to the total number of available documents. Following the same principle, we adapt this metric to our context by calculating the proportion of methods retained as candidates relative to the initial set of \textbf{14,578 methods}. It is calculated as follows:
 
 \[
 \textbf{REI} = \frac{\text{Number of retained methods}}{\text{Total number of initial methods}} \times 100
@@ -17,7 +17,7 @@ Both metrics are computed on the final results, providing complementary insights
 
 \subsection{Success Rate}
 
-To evaluate our approach, we applied it to a dataset comprising \textbf{100} textual descriptions of business rules. The ground-truth implementation method was successfully retained for \textbf{94 of the 100 business rules (94\%)}. This result shows that the approach preserves the relevant implementation method for the vast majority of the evaluated rules while substantially narrowing the search space.
+The ground-truth implementation method was successfully retained for \textbf{94 of the 100 business rules (94\%)}. This result shows that the approach preserves the relevant implementation method for the vast majority of the evaluated rules. The six remaining cases were lost at two different stages: four during R.2, where the selection of business entities associated with the rule description chunks failed to retain the relevant entities, leading the approach to focus on other methods. Although the selected configuration yielded the best results in our experiments, it did not prevent all relevant entities from being missed. The other two cases were lost during R.4, because the names of the documentation sections did not exactly match the corresponding class names, preventing the relevant methods from being retained.
 
 \subsection{Recovery Effort Index}
 
@@ -41,4 +41,6 @@ Maximum REI & 1.23\% \\
 \end{tabular}
 \end{table}
 
-Across the \textbf{94 cases}, the number of candidate methods ranged from \textbf{2} to \textbf{179}, with a median of \textbf{18.5}. The REI remained below \textbf{1.23\%} in all cases, indicating that only a small fraction of the initial business-logic methods was retained for each rule. This reduction in candidate-set size limits the scope of the investigation to methods that are potentially related to the rule description, rather than requiring consideration of the entire business-logic subset. Moreover, the reference method was retained in all \textbf{94 cases} considered in this analysis, showing that the smaller candidate sets were obtained without excluding the expected implementation in these cases. Overall, these results demonstrate the ability of the approach to narrow down potential implementations, thereby reducing the effort required to investigate candidate methods while preserving the reference method.
+Across the \textbf{94 cases}, the number of candidate methods ranged from \textbf{2} to \textbf{179}, with a median of \textbf{18.5}. The REI was at most 1.23\% across the 94 cases, indicating that only a small fraction of the initial business-logic methods was retained for each rule. This reduction in candidate-set size limits the scope of the investigation to methods that are potentially related to the rule description, rather than requiring consideration of the entire business-logic subset.
+
+Overall, these results demonstrate the ability of the approach to narrow down potential implementations, thereby reducing the effort required to investigate candidate methods while preserving the reference method.
